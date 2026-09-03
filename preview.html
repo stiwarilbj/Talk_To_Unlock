@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Talk to Unlock — Blocker preview</title>
+    <style>
+      * { box-sizing: border-box; }
+      body { margin: 0; background: #f5f7f8; color: #182025; font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+      .shell { display: grid; grid-template-columns: 240px minmax(0, 1fr) 300px; min-height: 100vh; }
+      aside { padding: 30px 24px; border-right: 1px solid #dbe1e4; background: #fff; }
+      .logo { margin-bottom: 34px; font-size: 21px; font-weight: 750; }
+      nav { display: grid; gap: 10px; }
+      nav span { padding: 12px 14px; border-radius: 10px; color: #687279; }
+      nav span:first-child { background: #edf2f2; color: #1a2226; font-weight: 650; }
+      main { max-width: 700px; width: 100%; margin: 0 auto; padding: 24px 36px; }
+      .search { height: 46px; margin-bottom: 22px; border: 1px solid #d8dfe2; border-radius: 14px; background: #fff; }
+      .post { margin-bottom: 18px; padding: 22px; border: 1px solid #dbe1e4; border-radius: 18px; background: #fff; }
+      .person { display: flex; align-items: center; gap: 11px; margin-bottom: 18px; }
+      .avatar { width: 42px; height: 42px; border-radius: 50%; background: linear-gradient(135deg, #6ebba0, #aacbc0); }
+      .lines { display: grid; gap: 7px; flex: 1; }
+      .line { height: 10px; border-radius: 99px; background: #e1e7e9; }
+      .line.short { width: 38%; }
+      .media { height: 210px; border-radius: 13px; background: linear-gradient(145deg, #d5e5df, #a8c9bd); }
+      .right { padding: 30px 24px; border-left: 1px solid #dbe1e4; background: #fff; }
+      .right h2 { margin: 0 0 20px; font-size: 16px; }
+      .trend { height: 84px; margin-bottom: 12px; border-radius: 13px; background: #f0f3f4; }
+      @media (max-width: 850px) { .shell { grid-template-columns: 1fr; } aside, .right { display: none; } main { padding: 18px; } }
+    </style>
+  </head>
+  <body>
+    <div class="shell" aria-hidden="true">
+      <aside><div class="logo">Socialspace</div><nav><span>Home</span><span>Explore</span><span>Notifications</span><span>Messages</span><span>Bookmarks</span></nav></aside>
+      <main><div class="search"></div><article class="post"><div class="person"><div class="avatar"></div><div class="lines"><div class="line short"></div><div class="line"></div></div></div><div class="media"></div></article><article class="post"><div class="person"><div class="avatar"></div><div class="lines"><div class="line short"></div><div class="line"></div></div></div><div class="media"></div></article></main>
+      <div class="right"><h2>Trending today</h2><div class="trend"></div><div class="trend"></div><div class="trend"></div></div>
+    </div>
+    <script src="preview-api.js?v=7"></script>
+    <script>
+      class PreviewAnalyser {
+        constructor() { this.fftSize = 256; this.smoothingTimeConstant = 0; }
+        getFloatTimeDomainData(samples) { samples.fill(0.18); }
+      }
+      class PreviewAudioContext {
+        constructor() { this.state = 'running'; }
+        createMediaStreamSource() { return { connect() {}, disconnect() {} }; }
+        createAnalyser() { return new PreviewAnalyser(); }
+        resume() { return Promise.resolve(); }
+        close() { this.state = 'closed'; return Promise.resolve(); }
+      }
+      class PreviewSpeechRecognition {
+        start() {
+          window.setTimeout(() => {
+            const alternative = { transcript: 'I choose to continue', confidence: 0.99 };
+            this.onresult?.({ results: [[alternative]] });
+          }, 850);
+        }
+        abort() {}
+      }
+      Object.defineProperty(navigator, 'mediaDevices', { configurable: true, value: { getUserMedia: async () => ({ getTracks: () => [{ stop() {} }] }) } });
+      window.AudioContext = PreviewAudioContext;
+      window.SpeechRecognition = PreviewSpeechRecognition;
+    </script>
+    <script src="shared.js?v=4"></script>
+    <script src="content.js?v=4"></script>
+  </body>
+</html>
