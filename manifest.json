@@ -1,16 +1,11 @@
 {
   "manifest_version": 3,
-  "name": "Talk to Unlock",
+  "name": "Talk to Unlock — Focus Companion",
   "version": "3.0.0",
   "description": "Build intentional access rules, focus locks, and mindful pauses for distracting websites.",
   "permissions": [
     "storage",
-    "activeTab",
     "alarms"
-  ],
-  "host_permissions": [
-    "http://*/*",
-    "https://*/*"
   ],
   "background": {
     "service_worker": "background.js"
@@ -40,7 +35,7 @@
     }
   ],
   "action": {
-    "default_title": "Talk to Unlock",
+    "default_title": "Talk to Unlock — Focus Companion",
     "default_popup": "popup.html",
     "default_icon": {
       "16": "icons/icon-16.png",

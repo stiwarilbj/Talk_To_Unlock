@@ -1,4 +1,4 @@
-# Talk to Unlock 3.0
+# Talk to Unlock — Focus Companion 3.0
 
 Talk to Unlock is a local-first Manifest V3 Chrome extension that adds intentional friction before distracting websites. Each site can require a spoken phrase, a timed pause, or a hard block, with optional schedules, allowances, cooldowns, and Focus sessions.
 
