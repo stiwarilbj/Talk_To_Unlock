@@ -22,7 +22,8 @@ test('manifest references files that exist', () => {
 });
 
 test('declares the 3.0 command-center surfaces and minimum runtime permissions', () => {
-  assert.equal(manifest.name, 'Talk to Unlock — Focus Companion');
+  assert.equal(manifest.name, 'Talk to Unlock — Voice Focus, Website Blocker & Productivity Coach');
+  assert.equal(manifest.short_name, 'Talk Unlock');
   assert.equal(manifest.content_scripts.length, 1);
   assert.equal(manifest.permissions.includes('scripting'), false);
   assert.equal(manifest.permissions.includes('activeTab'), false);
@@ -30,5 +31,5 @@ test('declares the 3.0 command-center surfaces and minimum runtime permissions',
   assert.equal('host_permissions' in manifest, false);
   assert.equal(manifest.action.default_popup, 'popup.html');
   assert.equal(manifest.options_ui.page, 'dashboard.html');
-  assert.equal(manifest.version, '3.0.0');
+  assert.equal(manifest.version, '3.0.1');
 });

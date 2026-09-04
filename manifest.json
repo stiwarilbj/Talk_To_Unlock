@@ -1,8 +1,9 @@
 {
   "manifest_version": 3,
-  "name": "Talk to Unlock — Focus Companion",
-  "version": "3.0.0",
-  "description": "Build intentional access rules, focus locks, and mindful pauses for distracting websites.",
+  "name": "Talk to Unlock — Voice Focus, Website Blocker & Productivity Coach",
+  "short_name": "Talk Unlock",
+  "version": "3.0.1",
+  "description": "Voice-based focus sessions, website blocking, mindful pauses, schedules, and digital wellbeing tools for better productivity.",
   "permissions": [
     "storage",
     "alarms"
@@ -35,7 +36,7 @@
     }
   ],
   "action": {
-    "default_title": "Talk to Unlock — Focus Companion",
+    "default_title": "Talk to Unlock — Voice Focus, Website Blocker & Productivity Coach",
     "default_popup": "popup.html",
     "default_icon": {
       "16": "icons/icon-16.png",
