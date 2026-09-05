@@ -3,6 +3,8 @@
 
   const SETTINGS_VERSION = 3;
   const DEFAULT_PHRASE = 'I choose to continue';
+  // Suggestions are used by onboarding only. Fresh settings never silently
+  // enable these domains.
   const DEFAULT_SITES = Object.freeze(['youtube.com', 'instagram.com', 'reddit.com', 'tiktok.com', 'x.com', 'facebook.com']);
   const VALID_METHODS = new Set(['voice', 'pause', 'blocked']);
   const VALID_PROFILES = new Set(['gentle', 'balanced', 'strict']);
@@ -84,7 +86,7 @@
       hostname: normalized,
       enabled: overrides.enabled !== false,
       includeSubdomains: overrides.includeSubdomains !== false,
-      method: VALID_METHODS.has(overrides.method) ? overrides.method : 'voice',
+      method: VALID_METHODS.has(overrides.method) ? overrides.method : 'pause',
       phrase: String(overrides.phrase || DEFAULT_PHRASE).trim() || DEFAULT_PHRASE,
       voiceLevel: clampNumber(overrides.voiceLevel, 0, 100, 35),
       allowTimedFallback: overrides.allowTimedFallback !== false,
@@ -116,7 +118,10 @@
       emergencyBypassEnabled: true,
       emergencyHoldSeconds: 5,
       activityRetentionDays: 30,
-      siteRules: DEFAULT_SITES.map((hostname) => createSiteRule(hostname))
+      // Keep new installs calm and intentional: onboarding adds rules after
+      // the user chooses them. The 10-second default comes from the rule
+      // factory and remains editable in More options.
+      siteRules: []
     };
   }
 
@@ -124,13 +129,14 @@
     const defaults = createDefaultSettings();
     const migratedSites = Array.isArray(raw.blockedSites)
       ? raw.blockedSites.map((hostname) => createSiteRule(hostname, {
+          method: 'voice',
           phrase: raw.requiredPhrase || DEFAULT_PHRASE,
           voiceLevel: raw.requiredLevel,
           allowTimedFallback: true
         }))
       : null;
     const sourceRules = Array.isArray(raw.siteRules) ? raw.siteRules : migratedSites;
-    const sanitizedRules = (sourceRules || defaults.siteRules).map((rule) => sanitizeSiteRule(rule, rule?.hostname)).filter(Boolean);
+    const sanitizedRules = (sourceRules || []).map((rule) => sanitizeSiteRule(rule, rule?.hostname)).filter(Boolean);
     const uniqueRules = [];
     const seenHosts = new Set();
     sanitizedRules.forEach((rule) => {
@@ -315,7 +321,6 @@
     if (!payload || typeof payload !== 'object') throw new Error('The selected file is not valid JSON settings.');
     if (payload.type !== 'talk-to-unlock-settings' || Number(payload.version) !== SETTINGS_VERSION || !payload.settings) throw new Error('Choose a Talk to Unlock 3.0 settings export.');
     const settings = sanitizeSettings(payload.settings);
-    if (!settings.siteRules.length) throw new Error('The settings file does not contain any valid site rules.');
     return settings;
   }
 

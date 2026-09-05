@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+
+# This project-subdirectory file is informational for the GitHub Pages site.
+# A project robots file cannot control robots behavior for the github.io origin.
+Sitemap: https://stiwarilbj.github.io/Talk_To_Unlock/sitemap.xml

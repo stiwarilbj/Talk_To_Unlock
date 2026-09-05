@@ -51,7 +51,7 @@
   }
 
   function brandMark() {
-    return '<span class="ttu-brand-mark" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>';
+    return '<span class="ttu-brand-mark" aria-hidden="true"><i></i><i></i></span>';
   }
 
   function friendlySiteName(value) {
@@ -82,12 +82,12 @@
   }
 
   function headingFor(next) {
-    if (next.reason === 'focus') return ['Focus lock in progress', 'This site is protected until your Focus session ends.'];
-    if (next.reason === 'allowance_exhausted') return ['Your daily allowance is complete', 'Step away for today, or use the emergency bypass if necessary.'];
-    if (next.reason === 'cooldown') return ['Give your attention a moment', `Another unlock becomes available in ${formatRemaining(next.until - Date.now())}.`];
-    if (next.decision === 'pause') return ['Pause before you continue', `Complete a ${next.fallbackSeconds}-second pause to unlock this site for ${next.rule.unlockMinutes} minutes.`];
-    if (next.decision === 'blocked') return ['This site is blocked right now', 'Your current rule does not offer a normal unlock path.'];
-    return ['Pause before you continue', `Say the phrase clearly to unlock this site for ${next.rule.unlockMinutes} minutes.`];
+    if (next.reason === 'focus') return ['Focus time first', 'This site stays protected while your Focus session is running.'];
+    if (next.reason === 'allowance_exhausted') return ['Your daily limit is used', 'You can leave this tab, or use the emergency option if you truly need to continue.'];
+    if (next.reason === 'cooldown') return ['A moment before the next visit', `Another unlock becomes available in ${formatRemaining(next.until - Date.now())}.`];
+    if (next.decision === 'pause') return ['A little pause before you scroll', `Start a ${next.fallbackSeconds}-second pause when you are ready.`];
+    if (next.decision === 'blocked') return ['This site is blocked for now', 'Your current rule keeps this boundary simple.'];
+    return ['A little pause before you scroll', `Say the phrase to continue for ${next.rule.unlockMinutes} minutes.`];
   }
 
   function interactionMarkup(next) {
@@ -102,7 +102,7 @@
         ${next.allowTimedFallback ? `<button class="ttu-secondary" type="button" data-pause>${icon('play')}<span>Use ${next.fallbackSeconds}-second pause instead</span></button>` : ''}`;
     }
     if (next.decision === 'pause') {
-      return `<div class="ttu-pause-icon">${icon('play')}<strong data-pause-count>${next.fallbackSeconds}</strong></div><p class="ttu-status" role="status" aria-live="polite" data-status>Take one intentional pause</p><p class="ttu-status-detail" data-status-detail>The countdown begins when you are ready.</p><button class="ttu-primary" type="button" data-pause>Begin ${next.fallbackSeconds}-second pause</button>`;
+      return `<div class="ttu-pause-icon" aria-hidden="true"><span class="ttu-mascot-face"><i></i><i></i><b></b></span><strong data-pause-count>${next.fallbackSeconds}</strong></div><p class="ttu-status" role="status" aria-live="polite" data-status>Take one intentional pause</p><p class="ttu-status-detail" data-status-detail>The countdown begins when you are ready.</p><button class="ttu-primary" type="button" data-pause>${icon('play')}<span>Start ${next.fallbackSeconds}-second pause</span></button>`;
     }
     return `<div class="ttu-block-icon">${icon('lock')}</div><p class="ttu-status" role="status" aria-live="polite" data-status>${next.reason === 'focus' ? 'Stay with the task you chose.' : 'This rule is holding the boundary.'}</p><p class="ttu-status-detail" data-status-detail>${next.until ? `Available again around ${new Date(next.until).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}.` : 'You can close this tab or use the emergency option below.'}</p>`;
   }
@@ -119,7 +119,7 @@
     shadowRoot = rootHost.attachShadow({ mode: 'open' });
     const stylesheet = document.createElement('link');
     stylesheet.rel = 'stylesheet';
-    stylesheet.href = `${chrome.runtime.getURL('styles.css')}?v=4`;
+    stylesheet.href = `${chrome.runtime.getURL('styles.css')}?v=31`;
     const reveal = () => rootHost?.style.removeProperty('visibility');
     stylesheet.addEventListener('load', reveal, { once: true });
     setTimeout(reveal, 500);
@@ -127,13 +127,13 @@
     const overlay = document.createElement('div');
     overlay.className = 'ttu-overlay';
     overlay.innerHTML = `
-      <div class="ttu-top-brand">${brandMark()}<span>Talk to Unlock</span></div>
+      <div class="ttu-top-brand">${brandMark()}<span>Little Pause</span></div>
       <button class="ttu-close-tab" type="button" data-close-tab><span>Close tab</span>${icon('close')}</button>
       <main class="ttu-card" role="dialog" aria-modal="true" aria-labelledby="ttu-title" aria-describedby="ttu-description">
         <div class="ttu-context"><span class="ttu-site-icon" aria-hidden="true">${friendlySiteName(next.rule.hostname).slice(0,2)}</span><strong>${next.rule.hostname}</strong><span class="ttu-context-tag">${contextLabel(next)}</span><span class="ttu-context-value">${contextValue(next)}</span></div>
         <header class="ttu-header"><h1 id="ttu-title">${heading}</h1><p id="ttu-description">${description}</p></header>
         <div class="ttu-interaction">${interactionMarkup(next)}</div>
-        <div class="ttu-footer-actions"><button type="button" data-why>Why am I seeing this?</button>${next.allowEmergency ? '<button type="button" data-emergency><span data-emergency-label>Emergency bypass</span><i aria-hidden="true"></i></button>' : ''}</div>
+        <div class="ttu-footer-actions">${next.allowEmergency ? '<div class="ttu-emergency-copy"><strong>Need to continue?</strong><span>Press and hold for a five-second bypass.</span></div><button type="button" data-emergency aria-label="Hold for emergency bypass"><span data-emergency-label>Hold to continue</span><i aria-hidden="true"></i></button>' : '<span class="ttu-emergency-copy"><strong>Need to continue?</strong><span>Close the tab or return when you are ready.</span></span>'}<button class="ttu-why" type="button" data-why>Why?</button></div>
         <p class="ttu-rule-note" data-explanation hidden></p>
         <p class="ttu-schedule-note">${next.rule.schedule.length ? 'This rule follows its configured local schedule.' : 'This rule is active whenever protection is on.'}</p>
       </main>`;
@@ -366,8 +366,13 @@
     clearEmergencyHold();
     try {
       const response = await send({ type: 'TTU_RECORD_UNLOCK', hostname, method });
-      removeOverlay(true);
-      startUsage(response.grant);
+      const finish = () => {
+        removeOverlay(true);
+        startUsage(response.grant);
+      };
+      setStatus('Nice work — you are back.', 'success', 'Your unlock window is ready.');
+      shadowRoot?.querySelector('.ttu-card')?.classList.add('is-success');
+      setTimeout(finish, 620);
     } catch (error) {
       setStatus('Could not create the unlock window.', 'error', error.message);
     }
@@ -452,7 +457,8 @@
     const now = Date.now();
     const deltaSeconds = Math.min(30, Math.max(0, Math.round((now - lastHeartbeatAt) / 1000)));
     lastHeartbeatAt = now;
-    if (deltaSeconds < 1 || (!force && (document.visibilityState !== 'visible' || !document.hasFocus()))) return;
+    const visibleAndFocused = document.visibilityState === 'visible' && document.hasFocus();
+    if (deltaSeconds < 1 || !visibleAndFocused) return;
     try { await send({ type: 'TTU_USAGE_HEARTBEAT', hostname, deltaSeconds }); } catch (_error) {}
   }
 
@@ -485,7 +491,8 @@
   });
   chrome.storage.onChanged.addListener((_changes, areaName) => { if (areaName === 'local') setTimeout(evaluateAndApply, 40); });
   window.addEventListener('focus', () => { lastHeartbeatAt = Date.now(); });
-  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') flushUsage(true); else lastHeartbeatAt = Date.now(); });
-  window.addEventListener('pagehide', () => { flushUsage(true); cleanupSession(); clearInterval(heartbeatTimer); });
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') flushUsage(false); else lastHeartbeatAt = Date.now(); });
+  window.addEventListener('blur', () => flushUsage(false));
+  window.addEventListener('pagehide', () => { flushUsage(false); cleanupSession(); clearInterval(heartbeatTimer); });
   evaluateAndApply();
 })();

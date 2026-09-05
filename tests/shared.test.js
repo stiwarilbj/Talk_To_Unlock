@@ -19,6 +19,14 @@ const {
   validateImportPayload
 } = globalThis.TalkToUnlockUtils;
 
+test('fresh settings are empty and new rules start with a ten-second pause', () => {
+  const settings = sanitizeSettings({});
+  assert.deepEqual(settings.siteRules, []);
+  const rule = createSiteRule('example.com');
+  assert.equal(rule.method, 'pause');
+  assert.equal(rule.fallbackSeconds, 10);
+});
+
 test('normalizes pasted sites, phrases, punctuation, and contractions', () => {
   assert.equal(normalizeSite(' https://www.YouTube.com/watch?v=1 '), 'youtube.com');
   assert.equal(normalizeSite('*.Example.com'), 'example.com');
@@ -90,7 +98,7 @@ test('applies global profiles without mutating the stored rule', () => {
 
 test('uses the required access-decision precedence', () => {
   const now = new Date(2026, 8, 2, 12, 0).getTime();
-  const rule = createSiteRule('example.com', { id: 'rule', dailyAllowanceMinutes: 1, cooldownMinutes: 20 });
+  const rule = createSiteRule('example.com', { id: 'rule', method: 'voice', dailyAllowanceMinutes: 1, cooldownMinutes: 20 });
   const settings = sanitizeSettings({ siteRules: [rule] });
   const runtime = createDefaultRuntime();
 
@@ -135,5 +143,5 @@ test('validates versioned configuration imports and rejects invalid files', () =
   const settings = sanitizeSettings({ siteRules: [createSiteRule('example.com')] });
   assert.equal(validateImportPayload({ type: 'talk-to-unlock-settings', version: 3, settings }).siteRules[0].hostname, 'example.com');
   assert.throws(() => validateImportPayload({ version: 2, settings }), /3\.0/);
-  assert.throws(() => validateImportPayload({ type: 'talk-to-unlock-settings', version: 3, settings: { siteRules: [] } }), /valid site rules/);
+  assert.deepEqual(validateImportPayload({ type: 'talk-to-unlock-settings', version: 3, settings: { siteRules: [] } }).siteRules, []);
 });

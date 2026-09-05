@@ -1,27 +1,41 @@
 (function initializePopup() {
   'use strict';
 
-  const { summarizeSchedule } = globalThis.TalkToUnlockUtils;
+  const {
+    DEFAULT_SITES,
+    createSiteRule,
+    normalizeSite
+  } = globalThis.TalkToUnlockUtils;
   const elements = {
-    allowance: document.querySelector('#metric-allowance'),
-    allowanceProgress: document.querySelector('#allowance-progress'),
     customDuration: document.querySelector('#custom-duration'),
     customMinutes: document.querySelector('#custom-minutes'),
+    demoAction: document.querySelector('#demo-action'),
+    demoCopy: document.querySelector('#demo-copy'),
     enabled: document.querySelector('#enabled'),
     focusAction: document.querySelector('#focus-action'),
+    focusChip: document.querySelector('#focus-chip'),
+    focusHeading: document.querySelector('#focus-heading'),
     focusRemaining: document.querySelector('#focus-remaining'),
-    modeDescription: document.querySelector('#mode-description'),
-    modeName: document.querySelector('#mode-name'),
+    finishOnboarding: document.querySelector('#finish-onboarding'),
+    main: document.querySelector('#main-content'),
+    onboarding: document.querySelector('#onboarding-panel'),
+    onboardingCustomSite: document.querySelector('#onboarding-custom-site'),
+    onboardingForm: document.querySelector('#onboarding-form'),
+    onboardingMessage: document.querySelector('#onboarding-message'),
     protectionLabel: document.querySelector('#protection-label'),
     ruleList: document.querySelector('#rule-list'),
-    time: document.querySelector('#metric-time'),
+    siteChoices: document.querySelector('#site-choices'),
     toast: document.querySelector('#toast'),
-    unlocks: document.querySelector('#metric-unlocks')
+    welcomeCopy: document.querySelector('#welcome-copy'),
+    welcomeTitle: document.querySelector('#welcome-title')
   };
-  let dashboard = null;
+  let state = null;
   let selectedMinutes = 25;
-  let timer = 0;
+  let focusTimer = 0;
   let toastTimer = 0;
+  let demoTimer = 0;
+  let demoRemaining = 10;
+  let demoTried = false;
 
   function send(message) {
     return new Promise((resolve, reject) => {
@@ -33,12 +47,16 @@
     });
   }
 
+  function escapeHtml(value) {
+    return String(value ?? '').replace(/[&<>'"]/g, (character) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' })[character]);
+  }
+
   function showToast(message, tone = 'success') {
     clearTimeout(toastTimer);
     elements.toast.textContent = message;
     elements.toast.dataset.tone = tone;
     elements.toast.dataset.visible = 'true';
-    toastTimer = window.setTimeout(() => { elements.toast.dataset.visible = 'false'; }, 2400);
+    toastTimer = window.setTimeout(() => { elements.toast.dataset.visible = 'false'; }, 2600);
   }
 
   function friendlySiteName(hostname) {
@@ -46,36 +64,30 @@
     return known[hostname] || hostname.split('.')[0].replace(/(^|[-_])\w/g, (value) => value.replace(/[-_]/, '').toUpperCase());
   }
 
+  function methodLabel(method) {
+    return { pause: 'Pause', voice: 'Phrase', blocked: 'Blocked' }[method] || 'Pause';
+  }
+
   function formatDuration(seconds) {
-    const minutes = Math.max(0, Math.round(seconds / 60));
+    const minutes = Math.max(0, Math.round(Number(seconds) / 60));
     if (minutes < 60) return `${minutes} min`;
     const hours = Math.floor(minutes / 60);
     const remainder = minutes % 60;
     return remainder ? `${hours}h ${remainder}m` : `${hours}h`;
   }
 
-  function profileDescription(profile) {
-    return {
-      gentle: 'Timed pauses with a softer path',
-      balanced: 'Voice check + timed fallback',
-      strict: 'Voice checks without timed fallback'
-    }[profile] || '';
-  }
-
-  function ruleStatus(rule, usageSeconds = 0) {
-    if (rule.dailyAllowanceMinutes !== null) return `${Math.max(0, rule.dailyAllowanceMinutes - Math.floor(usageSeconds / 60))} min left`;
-    if (rule.method === 'blocked') return summarizeSchedule(rule) === 'Always active' ? 'Blocked' : summarizeSchedule(rule);
-    if (rule.method === 'pause') return `${rule.fallbackSeconds} sec pause`;
-    return rule.cooldownMinutes ? `Voice every ${rule.cooldownMinutes} min` : 'Voice required';
+  function renderOnboardingChoices() {
+    const selected = new Set([...elements.siteChoices.querySelectorAll('input:checked')].map((input) => input.value));
+    elements.siteChoices.innerHTML = DEFAULT_SITES.slice(0, 4).map((hostname) => `<label><input type="checkbox" value="${hostname}" ${selected.has(hostname) ? 'checked' : ''}><span>${friendlySiteName(hostname)}</span></label>`).join('');
   }
 
   function renderRules(settings, summary) {
-    const rules = settings.siteRules.filter((rule) => rule.enabled).slice(0, 3);
+    const rules = settings.siteRules.filter((rule) => rule.enabled).slice(0, 4);
     elements.ruleList.replaceChildren();
     if (!rules.length) {
       const empty = document.createElement('li');
       empty.className = 'empty-rules';
-      empty.textContent = 'No active rules yet.';
+      empty.textContent = 'Your list is empty. Add a site when you are ready.';
       elements.ruleList.append(empty);
       return;
     }
@@ -83,13 +95,10 @@
       const item = document.createElement('li');
       item.className = 'rule-row';
       item.tabIndex = 0;
-      item.dataset.ruleId = rule.id;
-      item.innerHTML = `
-        <span class="rule-icon" aria-hidden="true">${friendlySiteName(rule.hostname).slice(0, 2)}</span>
-        <span class="rule-copy"><strong>${friendlySiteName(rule.hostname)}</strong><span>${rule.hostname}</span></span>
-        <span class="rule-status">${ruleStatus(rule, summary.todayUsage[rule.id] || 0)}</span>
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"></path></svg>`;
-      const open = () => openDashboard('site-rules', rule.id);
+      item.setAttribute('role', 'button');
+      item.setAttribute('aria-label', `Edit ${friendlySiteName(rule.hostname)} rule`);
+      item.innerHTML = `<span class="rule-icon" aria-hidden="true">${escapeHtml(friendlySiteName(rule.hostname).slice(0, 2))}</span><span class="rule-copy"><strong>${escapeHtml(friendlySiteName(rule.hostname))}</strong><span>${escapeHtml(rule.hostname)}</span></span><span class="rule-status">${methodLabel(rule.method)}${rule.dailyAllowanceMinutes !== null ? ` · ${Math.max(0, rule.dailyAllowanceMinutes - Math.floor((summary.todayUsage[rule.id] || 0) / 60))}m left` : ''}</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"></path></svg>`;
+      const open = () => openDashboard('sites', rule.id);
       item.addEventListener('click', open);
       item.addEventListener('keydown', (event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); open(); } });
       elements.ruleList.append(item);
@@ -97,45 +106,53 @@
   }
 
   function renderFocus(activeFocus) {
-    clearInterval(timer);
+    clearInterval(focusTimer);
     if (!activeFocus) {
+      elements.focusHeading.textContent = 'Ready when you are';
       elements.focusAction.dataset.active = 'false';
-      elements.focusAction.querySelector('span').textContent = 'Start focus';
+      elements.focusAction.querySelector('span:last-child').textContent = 'Start focusing';
+      elements.focusAction.querySelector('.button-icon').textContent = '▶';
       elements.focusRemaining.textContent = '';
+      elements.focusChip.textContent = selectedMinutes === 25 || selectedMinutes === 50 ? `${selectedMinutes} min` : `${selectedMinutes} min`;
+      document.querySelector('.duration-picker').hidden = false;
       return;
     }
+    document.querySelector('.duration-picker').hidden = true;
+    elements.customDuration.hidden = true;
+    elements.focusHeading.textContent = 'Focus is on';
     elements.focusAction.dataset.active = 'true';
-    elements.focusAction.querySelector('span').textContent = 'End focus';
+    elements.focusAction.querySelector('span:last-child').textContent = 'End session';
+    elements.focusAction.querySelector('.button-icon').textContent = '■';
+    elements.focusChip.textContent = `${activeFocus.durationMinutes} min`;
     const tick = () => {
-      const remaining = Math.max(0, activeFocus.endsAt - Date.now());
-      elements.focusRemaining.textContent = remaining ? `Focus lock ends in ${Math.ceil(remaining / 60000)} min` : 'Focus lock is ending…';
-      if (!remaining) load().catch(() => {});
+      const seconds = Math.max(0, Math.ceil((activeFocus.endsAt - Date.now()) / 1000));
+      const minutes = Math.floor(seconds / 60);
+      elements.focusRemaining.textContent = seconds ? `${minutes}m ${String(seconds % 60).padStart(2, '0')}s remaining` : 'Finishing up…';
+      if (!seconds) load().catch(() => {});
     };
     tick();
-    timer = window.setInterval(tick, 30000);
+    focusTimer = window.setInterval(tick, 1000);
   }
 
   function render(response) {
-    dashboard = response;
+    state = response;
     const { settings, summary } = response;
     elements.enabled.checked = settings.enabled;
     elements.protectionLabel.textContent = settings.enabled ? 'Protection on' : 'Protection off';
-    elements.modeName.textContent = settings.profile[0].toUpperCase() + settings.profile.slice(1);
-    elements.modeDescription.textContent = profileDescription(settings.profile);
-    elements.unlocks.textContent = String(summary.unlocks);
-    elements.time.textContent = formatDuration(summary.focusedTimeSeconds);
-    if (summary.finiteAllowanceSeconds) {
-      elements.allowance.textContent = `${Math.ceil(summary.finiteRemainingSeconds / 60)} min left`;
-      const used = 100 - (summary.finiteRemainingSeconds / summary.finiteAllowanceSeconds) * 100;
-      elements.allowanceProgress.style.width = `${Math.min(100, Math.max(0, used))}%`;
-      elements.allowanceProgress.parentElement.setAttribute('aria-valuenow', String(Math.round(used)));
+    if (summary.protectionPausedUntil > Date.now()) {
+      elements.protectionLabel.textContent = 'Protection paused';
+      elements.welcomeTitle.textContent = 'A little breather.';
+      elements.welcomeCopy.textContent = 'Protection is paused for now. Turn it back on whenever you are ready.';
     } else {
-      elements.allowance.textContent = 'Unlimited';
-      elements.allowanceProgress.style.width = '0%';
-      elements.allowanceProgress.parentElement.setAttribute('aria-valuenow', '0');
+      elements.welcomeTitle.textContent = settings.enabled ? 'Make a little room.' : 'Protection is taking a break.';
+      elements.welcomeCopy.textContent = settings.enabled ? 'Your chosen sites wait behind a friendly pause.' : 'Turn protection on when you want a little help with scrolling.';
     }
     renderRules(settings, summary);
     renderFocus(summary.activeFocus);
+    const fresh = response.onboardingCompleted !== true && settings.siteRules.length === 0;
+    elements.main.hidden = fresh;
+    elements.onboarding.hidden = !fresh;
+    if (fresh) renderOnboardingChoices();
   }
 
   async function load() {
@@ -151,19 +168,49 @@
     }
   }
 
+  function startDemo() {
+    if (demoTimer) return;
+    demoRemaining = 10;
+    elements.demoAction.disabled = true;
+    elements.demoAction.textContent = '10s';
+    elements.demoCopy.textContent = 'Take ten seconds. You can still stop anytime.';
+    const tick = () => {
+      elements.demoAction.textContent = demoRemaining ? `${demoRemaining}s` : 'Done';
+      elements.demoCopy.textContent = demoRemaining ? `${demoRemaining} second${demoRemaining === 1 ? '' : 's'} left.` : 'Nice. That is all a pause needs to be.';
+      if (!demoRemaining) {
+        clearInterval(demoTimer);
+        demoTimer = 0;
+        demoTried = true;
+        elements.demoAction.disabled = false;
+        return;
+      }
+      demoRemaining -= 1;
+    };
+    tick();
+    demoTimer = window.setInterval(tick, 1000);
+  }
+
+  function completeOnboarding() {
+    return send({ type: 'TTU_COMPLETE_ONBOARDING' });
+  }
+
   document.querySelectorAll('[data-open]').forEach((button) => button.addEventListener('click', () => openDashboard(button.dataset.open)));
   document.querySelectorAll('.duration').forEach((button) => button.addEventListener('click', () => {
     document.querySelectorAll('.duration').forEach((entry) => entry.classList.toggle('active', entry === button));
     if (button.dataset.minutes === 'custom') {
       elements.customDuration.hidden = false;
-      selectedMinutes = Number(elements.customMinutes.value) || 75;
       elements.customMinutes.focus();
+      selectedMinutes = Math.min(240, Math.max(5, Number(elements.customMinutes.value) || 75));
     } else {
       elements.customDuration.hidden = true;
       selectedMinutes = Number(button.dataset.minutes);
     }
+    elements.focusChip.textContent = `${selectedMinutes} min`;
   }));
-  elements.customMinutes.addEventListener('input', () => { selectedMinutes = Math.min(240, Math.max(5, Number(elements.customMinutes.value) || 5)); });
+  elements.customMinutes.addEventListener('input', () => {
+    selectedMinutes = Math.min(240, Math.max(5, Number(elements.customMinutes.value) || 5));
+    elements.focusChip.textContent = `${selectedMinutes} min`;
+  });
   elements.enabled.addEventListener('change', async () => {
     const enabled = elements.enabled.checked;
     try {
@@ -178,12 +225,12 @@
   elements.focusAction.addEventListener('click', async () => {
     elements.focusAction.disabled = true;
     try {
-      if (dashboard?.summary.activeFocus) {
+      if (state?.summary.activeFocus) {
         await send({ type: 'TTU_STOP_FOCUS' });
-        showToast('Focus lock ended.');
+        showToast('Focus session ended.');
       } else {
         await send({ type: 'TTU_START_FOCUS', minutes: selectedMinutes });
-        showToast(`${selectedMinutes}-minute focus lock started.`);
+        showToast(`${selectedMinutes}-minute focus session started.`);
       }
       await load();
     } catch (error) {
@@ -192,6 +239,37 @@
       elements.focusAction.disabled = false;
     }
   });
+  elements.demoAction.addEventListener('click', startDemo);
+  elements.onboardingForm.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    elements.onboardingMessage.textContent = '';
+    const chosen = [...elements.siteChoices.querySelectorAll('input:checked')].map((input) => input.value);
+    const customValue = elements.onboardingCustomSite.value.trim();
+    if (customValue) {
+      const custom = normalizeSite(customValue);
+      if (!custom) { elements.onboardingMessage.textContent = 'That website address needs a little adjustment. Try example.com.'; elements.onboardingCustomSite.focus(); return; }
+      chosen.push(custom);
+    }
+    const uniqueSites = [...new Set(chosen)];
+    const method = new FormData(elements.onboardingForm).get('onboarding-method') || 'pause';
+    const next = structuredClone(state.settings);
+    uniqueSites.filter((hostname) => !next.siteRules.some((rule) => rule.hostname === hostname)).forEach((hostname) => next.siteRules.push(createSiteRule(hostname, { method, phrase: next.defaultPhrase, voiceLevel: next.defaultVoiceLevel, fallbackSeconds: next.defaultFallbackSeconds })));
+    elements.finishOnboarding.disabled = true;
+    try {
+      await send({ type: 'TTU_SAVE_SETTINGS', settings: next });
+      await completeOnboarding();
+      await load();
+      showToast(uniqueSites.length ? 'Your pause places are ready.' : 'You can add sites anytime.');
+    } catch (error) {
+      elements.onboardingMessage.textContent = error.message;
+    } finally {
+      elements.finishOnboarding.disabled = false;
+    }
+  });
+  document.querySelector('#skip-onboarding').addEventListener('click', async () => {
+    try { await completeOnboarding(); await load(); showToast('No problem. Add a site whenever you are ready.'); }
+    catch (error) { elements.onboardingMessage.textContent = error.message; }
+  });
 
-  load().catch((error) => showToast(error.message || 'Could not load Talk to Unlock.', 'error'));
+  load().catch((error) => showToast(error.message || 'Could not load Little Pause.', 'error'));
 })();

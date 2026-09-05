@@ -15,6 +15,7 @@ const {
 } = globalThis.TalkToUnlockUtils;
 
 const FOCUS_ALARM = 'ttu-focus-expiry';
+const ONBOARDING_KEY = 'onboardingCompleted';
 const LEGACY_KEYS = ['settingsVersion', 'enabled', 'blockedSites', 'requiredPhrase', 'requiredLevel'];
 let mutationQueue = Promise.resolve();
 
@@ -54,27 +55,31 @@ async function ensureData() {
   const stored = await storageGet(null);
   const settings = sanitizeSettings(stored.settings || stored);
   const runtime = sanitizeRuntime(stored.runtime || createDefaultRuntime(), settings);
-  await storageSet({ settings, runtime });
+  const hasExistingConfiguration = Boolean(stored.settings || stored.siteRules || stored.blockedSites || stored.settingsVersion);
+  const onboardingCompleted = typeof stored[ONBOARDING_KEY] === 'boolean'
+    ? stored[ONBOARDING_KEY]
+    : hasExistingConfiguration;
+  await storageSet({ settings, runtime, [ONBOARDING_KEY]: onboardingCompleted });
   if (stored.settingsVersion || stored.blockedSites || stored.requiredPhrase || stored.requiredLevel !== undefined) {
     await storageRemove(LEGACY_KEYS);
   }
   if (runtime.activeFocus) await createAlarm(FOCUS_ALARM, { when: runtime.activeFocus.endsAt });
-  return { settings, runtime };
+  return { settings, runtime, onboardingCompleted };
 }
 
 const ready = ensureData().catch(async () => {
   const settings = createDefaultSettings();
   const runtime = createDefaultRuntime();
-  await storageSet({ settings, runtime });
-  return { settings, runtime };
+  await storageSet({ settings, runtime, [ONBOARDING_KEY]: false });
+  return { settings, runtime, onboardingCompleted: false };
 });
 
 async function readState(now = Date.now()) {
   await ready;
-  const stored = await storageGet(['settings', 'runtime']);
+  const stored = await storageGet(['settings', 'runtime', ONBOARDING_KEY]);
   const settings = sanitizeSettings(stored.settings);
   const runtime = sanitizeRuntime(stored.runtime, settings, now);
-  return { settings, runtime };
+  return { settings, runtime, onboardingCompleted: stored[ONBOARDING_KEY] === true };
 }
 
 function mutateState(mutator) {
@@ -152,10 +157,16 @@ async function recordHeartbeat(hostname, deltaSeconds) {
     if (!grant || grant.endsAt <= now) return { ok: false, exhausted: false };
     const date = localDateKey(now);
     state.runtime.usageByDate[date] ||= {};
-    const increment = Math.min(30, Math.max(1, Math.round(Number(deltaSeconds) || 0)));
+    const requestedIncrement = Math.min(30, Math.max(1, Math.round(Number(deltaSeconds) || 0)));
+    const grantRemaining = Math.max(0, Math.ceil((grant.endsAt - now) / 1000));
+    const allowanceRemaining = rule.dailyAllowanceMinutes === null
+      ? Infinity
+      : Math.max(0, rule.dailyAllowanceMinutes * 60 - (state.runtime.usageByDate[date][rule.id] || 0));
+    const allowanceSeconds = rule.dailyAllowanceMinutes === null ? null : rule.dailyAllowanceMinutes * 60;
+    const increment = Math.min(requestedIncrement, grantRemaining, allowanceRemaining);
+    if (increment <= 0) return { ok: true, usedSeconds: state.runtime.usageByDate[date][rule.id] || 0, allowanceSeconds, exhausted: allowanceSeconds !== null };
     state.runtime.usageByDate[date][rule.id] = (state.runtime.usageByDate[date][rule.id] || 0) + increment;
     const usedSeconds = state.runtime.usageByDate[date][rule.id];
-    const allowanceSeconds = rule.dailyAllowanceMinutes === null ? null : rule.dailyAllowanceMinutes * 60;
     return { ok: true, usedSeconds, allowanceSeconds, exhausted: allowanceSeconds !== null && usedSeconds >= allowanceSeconds };
   });
 }
@@ -202,6 +213,10 @@ async function handleMessage(message, sender) {
     const state = await readState();
     return { ok: true, ...state, summary: summarizeState(state.settings, state.runtime) };
   }
+  if (type === 'TTU_COMPLETE_ONBOARDING') {
+    await storageSet({ [ONBOARDING_KEY]: true });
+    return { ok: true, onboardingCompleted: true };
+  }
   if (type === 'TTU_RECORD_UNLOCK') return recordUnlock(message.hostname, message.method);
   if (type === 'TTU_USAGE_HEARTBEAT') return recordHeartbeat(message.hostname, message.deltaSeconds);
   if (type === 'TTU_START_FOCUS') return startFocus(message.minutes);
@@ -247,6 +262,7 @@ async function handleMessage(message, sender) {
     return mutateState((state) => {
       state.settings = createDefaultSettings();
       state.runtime = createDefaultRuntime();
+      state[ONBOARDING_KEY] = false;
       return { ok: true, settings: state.settings };
     });
   }
@@ -268,7 +284,8 @@ async function handleMessage(message, sender) {
     return { ok: true };
   }
   if (type === 'TTU_OPEN_DASHBOARD') {
-    const hash = ['overview', 'site-rules', 'schedules', 'focus', 'activity', 'settings'].includes(message.section) ? `#${message.section}` : '';
+    const section = ({ overview: 'sites', 'site-rules': 'sites', schedules: 'sites', focus: 'sites' })[message.section] || message.section;
+    const hash = ['sites', 'activity', 'settings'].includes(section) ? `#${section}` : '';
     const query = message.ruleId ? `?rule=${encodeURIComponent(message.ruleId)}` : '';
     await chrome.tabs.create({ url: `${chrome.runtime.getURL('dashboard.html')}${query}${hash}` });
     return { ok: true };

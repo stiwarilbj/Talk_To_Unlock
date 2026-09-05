@@ -3,49 +3,43 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Talk to Unlock — Dashboard</title>
-    <link rel="stylesheet" href="dashboard.css">
+    <title>Little Pause — My sites</title>
+    <link rel="stylesheet" href="dashboard.css?v=31">
   </head>
   <body>
     <div class="dashboard-shell">
       <aside class="sidebar">
-        <button class="sidebar-brand button-reset" type="button" data-nav="overview">
-          <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
-          <span>Talk to Unlock</span>
+        <button class="sidebar-brand button-reset" type="button" data-nav="sites" aria-label="Open Little Pause home">
+          <span class="brand-mark" aria-hidden="true"><i></i><i></i></span>
+          <span>Little Pause</span>
         </button>
-        <nav class="sidebar-nav" aria-label="Dashboard sections">
-          <button type="button" data-nav="overview"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="3" width="7" height="7" rx="1"></rect><rect x="3" y="14" width="7" height="7" rx="1"></rect><rect x="14" y="14" width="7" height="7" rx="1"></rect></svg><span>Overview</span></button>
-          <button type="button" data-nav="site-rules"><svg viewBox="0 0 24 24"><path d="M12 3 5 6.2v5.3c0 4.3 2.8 8 7 9.5 4.2-1.5 7-5.2 7-9.5V6.2Z"></path><path d="m9 12 2 2 4-4"></path></svg><span>Site rules</span></button>
-          <button type="button" data-nav="schedules"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"></rect><path d="M7 3v4M17 3v4M3 10h18"></path></svg><span>Schedules</span></button>
-          <button type="button" data-nav="focus"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><circle cx="12" cy="12" r="4"></circle><path d="M12 3v3M21 12h-3M12 21v-3M3 12h3"></path></svg><span>Focus sessions</span></button>
-          <button type="button" data-nav="activity"><svg viewBox="0 0 24 24"><path d="M4 19V9M10 19V5M16 19v-7M22 19V3"></path></svg><span>Activity</span></button>
-          <button type="button" data-nav="settings"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19 12a7 7 0 0 0-.1-1l2-1.5-2-3.4-2.4 1A8 8 0 0 0 14.8 6l-.3-2.6h-4L10.2 6a8 8 0 0 0-1.7 1.1l-2.4-1-2 3.4 2 1.5a7 7 0 0 0 0 2l-2 1.5 2 3.4 2.4-1a8 8 0 0 0 1.7 1.1l.3 2.6h4l.3-2.6a8 8 0 0 0 1.7-1.1l2.4 1 2-3.4-2-1.5a7 7 0 0 0 .1-1Z"></path></svg><span>Settings</span></button>
+        <nav class="sidebar-nav" aria-label="Little Pause pages">
+          <button type="button" data-nav="sites" aria-label="Open My sites"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 5 6.2v5.3c0 4.3 2.8 8 7 9.5 4.2-1.5 7-5.2 7-9.5V6.2Z"></path><path d="m9 12 2 2 4-4"></path></svg><span>My sites</span></button>
+          <button type="button" data-nav="activity" aria-label="Open Activity"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V9M10 19V5M16 19v-7M22 19V3"></path></svg><span>Activity</span></button>
+          <button type="button" data-nav="settings" aria-label="Open Settings"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"></circle><path d="M19 12a7 7 0 0 0-.1-1l2-1.5-2-3.4-2.4 1A8 8 0 0 0 14.8 6l-.3-2.6h-4L10.2 6a8 8 0 0 0-1.7 1.1l-2.4-1-2 3.4 2 1.5a7 7 0 0 0 0 2l-2 1.5 2.4 1 2-3.4a8 8 0 0 0 1.7 1.1l.3 2.6h4l.3-2.6a8 8 0 0 0 1.7-1.1l2.4 1 2-3.4-2-1.5a7 7 0 0 0 .1-1Z"></path></svg><span>Settings</span></button>
         </nav>
-        <p class="local-note"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="8" ry="3"></ellipse><path d="M4 5v7c0 1.7 3.6 3 8 3s8-1.3 8-3V5M4 12v7c0 1.7 3.6 3 8 3s8-1.3 8-3v-7"></path></svg><span>Stored locally</span></p>
+        <div class="sidebar-bottom"><div class="sidebar-mascot mascot" aria-hidden="true"><span></span><span></span><i></i></div><p><strong>Pause on purpose.</strong><br>Live with intention.</p><p class="local-note"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 5 6.2v5.3c0 4.3 2.8 8 7 9.5 4.2-1.5 7-5.2 7-9.5V6.2Z"></path><path d="M9 12h6"></path></svg>Stored on this device</p></div>
       </aside>
 
       <main class="main-shell">
-        <header class="page-header">
-          <div><h1 id="page-title">Overview</h1><p id="page-subtitle">Your attention, configured with intention.</p></div>
-          <div class="header-actions" id="header-actions"></div>
-        </header>
+        <header class="page-header"><div><p class="eyebrow">Little Pause</p><h1 id="page-title">My sites</h1><p id="page-subtitle">Choose a friendly boundary for each distracting site.</p></div><div class="header-actions" id="header-actions"></div></header>
         <section class="protection-bar" id="protection-bar" aria-live="polite"></section>
-        <div class="content" id="content"><div class="loading-state"><span></span><p>Loading your command center…</p></div></div>
+        <div class="content" id="content"><div class="loading-state"><span></span><p>Loading your pause places…</p></div></div>
       </main>
     </div>
 
-    <dialog id="add-site-dialog" class="dialog">
+    <dialog id="add-site-dialog" class="dialog" aria-labelledby="add-site-title">
       <form method="dialog" id="add-site-form">
-        <div class="dialog-heading"><div><h2>Add a site rule</h2><p>Protect a domain and choose its starting behavior.</p></div><button class="icon-button" value="cancel" aria-label="Close dialog"><svg viewBox="0 0 24 24"><path d="m7 7 10 10M17 7 7 17"></path></svg></button></div>
+        <div class="dialog-heading"><div><p class="eyebrow">My sites</p><h2 id="add-site-title">Add a pause place</h2><p>Start with a domain and a simple choice. You can tune it later.</p></div><button class="icon-button" value="cancel" aria-label="Close add site dialog"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 7 10 10M17 7 7 17"></path></svg></button></div>
         <label class="field"><span>Website</span><input id="add-site-hostname" type="text" placeholder="example.com" autocomplete="url" required><small id="add-site-error" class="field-error" role="alert"></small></label>
-        <fieldset class="field"><legend>Unlock method</legend><div class="segmented"><label><input type="radio" name="new-method" value="voice" checked><span>Voice</span></label><label><input type="radio" name="new-method" value="pause"><span>Pause</span></label><label><input type="radio" name="new-method" value="blocked"><span>Blocked</span></label></div></fieldset>
+        <fieldset class="field"><legend>When I visit, I want to…</legend><div class="method-cards compact"><label><input type="radio" name="new-method" value="pause" checked><span><strong>Take a pause</strong><small>10 seconds</small></span></label><label><input type="radio" name="new-method" value="voice"><span><strong>Say a phrase</strong><small>Voice check</small></span></label><label><input type="radio" name="new-method" value="blocked"><span><strong>Keep blocked</strong><small>No unlock</small></span></label></div></fieldset>
         <div class="dialog-actions"><button class="button secondary" value="cancel">Cancel</button><button class="button primary" id="confirm-add-site" value="default">Add site</button></div>
       </form>
     </dialog>
 
     <input id="import-file" type="file" accept="application/json,.json" hidden>
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
-    <script src="preview-api.js"></script>
+    <script src="preview-api.js?v=31"></script>
     <script src="shared.js"></script>
     <script src="dashboard.js"></script>
   </body>

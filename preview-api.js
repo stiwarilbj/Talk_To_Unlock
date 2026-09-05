@@ -3,7 +3,7 @@
 
   if (scope.chrome?.runtime?.id) return;
   document.documentElement.classList.add('ttu-preview');
-  const previewKey = 'talk-to-unlock-preview-v3-blue-hour-3';
+  const previewKey = 'little-pause-preview-v3-1';
   const messageListeners = [];
   const storageListeners = [];
   const defaultRule = (hostname, index) => ({
@@ -36,10 +36,12 @@
       activityRetentionDays: 30,
       siteRules: ['youtube.com','instagram.com','reddit.com','tiktok.com','x.com','facebook.com'].map(defaultRule)
     },
-    runtime: { protectionPausedUntil: 0, activeFocus: null, grantsByRule: {}, cooldownsByRule: {}, usageByDate: {}, activity: [] }
+    runtime: { protectionPausedUntil: 0, activeFocus: null, grantsByRule: {}, cooldownsByRule: {}, usageByDate: {}, activity: [] },
+    onboardingCompleted: true
   };
   let data;
-  try { data = { ...defaults, ...(JSON.parse(localStorage.getItem(previewKey)) || {}) }; }
+  const freshPreview = new URLSearchParams(location.search).get('fresh') === '1';
+  try { data = freshPreview ? structuredClone({ ...defaults, settings: { ...defaults.settings, siteRules: [] }, onboardingCompleted: false }) : { ...defaults, ...(JSON.parse(localStorage.getItem(previewKey)) || {}) }; }
   catch (_error) { data = structuredClone(defaults); }
 
   function save(changes = {}) {
@@ -77,10 +79,11 @@
 
   function handle(message) {
     const type = message?.type;
-    if (type === 'TTU_GET_DASHBOARD') return { ok: true, settings: structuredClone(data.settings), runtime: structuredClone(data.runtime), summary: summary() };
+    if (type === 'TTU_GET_DASHBOARD') return { ok: true, settings: structuredClone(data.settings), runtime: structuredClone(data.runtime), onboardingCompleted: data.onboardingCompleted !== false, summary: summary() };
+    if (type === 'TTU_COMPLETE_ONBOARDING') { data.onboardingCompleted = true; save(); return { ok: true, onboardingCompleted: true }; }
     if (type === 'TTU_SET_ENABLED') { data.settings.enabled = message.enabled !== false; save(); return { ok: true }; }
     if (type === 'TTU_SAVE_SETTINGS') { data.settings = structuredClone(message.settings); save(); return { ok: true, settings: data.settings }; }
-    if (type === 'TTU_RESET_SETTINGS') { data = structuredClone(defaults); save(); return { ok: true, settings: data.settings }; }
+    if (type === 'TTU_RESET_SETTINGS') { data = structuredClone(defaults); data.settings.siteRules = []; data.onboardingCompleted = false; save(); return { ok: true, settings: data.settings }; }
     if (type === 'TTU_CLEAR_ACTIVITY') { data.runtime.activity = []; save(); return { ok: true }; }
     if (type === 'TTU_START_FOCUS') { const minutes = Number(message.minutes) || 25; data.runtime.activeFocus = { id: `focus-${Date.now()}`, startedAt: Date.now(), endsAt: Date.now() + minutes * 60000, durationMinutes: minutes }; addEvent('focus_started', null, { durationMinutes: minutes }); save(); return { ok: true, activeFocus: data.runtime.activeFocus }; }
     if (type === 'TTU_STOP_FOCUS') { data.runtime.activeFocus = null; addEvent('focus_ended'); save(); return { ok: true }; }
@@ -105,7 +108,7 @@
       if (data.runtime.activeFocus?.endsAt > Date.now() && rule.blockDuringFocus) return { ok: true, decision: 'blocked', reason: 'focus', rule, until: data.runtime.activeFocus.endsAt, allowEmergency: true, policy: { emergencyHoldSeconds: 5 } };
       return { ok: true, decision: rule.method, reason: 'rule', rule, usedSeconds: 240, allowanceSeconds: rule.dailyAllowanceMinutes ? rule.dailyAllowanceMinutes * 60 : null, allowTimedFallback: rule.allowTimedFallback, fallbackSeconds: rule.fallbackSeconds, allowEmergency: true, policy: { emergencyHoldSeconds: 5 } };
     }
-    if (type === 'TTU_OPEN_DASHBOARD') { location.href = `dashboard.html${message.ruleId ? `?rule=${encodeURIComponent(message.ruleId)}` : ''}#${message.section || 'overview'}`; return { ok: true }; }
+    if (type === 'TTU_OPEN_DASHBOARD') { const section = ({ overview: 'sites', 'site-rules': 'sites', schedules: 'sites', focus: 'sites' })[message.section] || message.section || 'sites'; location.href = `dashboard.html${message.ruleId ? `?rule=${encodeURIComponent(message.ruleId)}` : ''}#${section}`; return { ok: true }; }
     if (type === 'TTU_OPEN_SETTINGS') { location.href = 'dashboard.html#settings'; return { ok: true }; }
     if (type === 'TTU_OPEN_PREVIEW') { window.open('preview.html', '_blank'); return { ok: true }; }
     if (type === 'TTU_CLOSE_TAB') return { ok: false, error: 'Close tab is disabled in preview mode.' };
@@ -117,7 +120,7 @@
     id: 'talk-to-unlock-preview',
     lastError: null,
     getURL(path) { return new URL(path, location.href).href; },
-    openOptionsPage() { location.href = 'dashboard.html#overview'; return Promise.resolve(); },
+    openOptionsPage() { location.href = 'dashboard.html#sites'; return Promise.resolve(); },
     onMessage: { addListener(listener) { messageListeners.push(listener); } },
     sendMessage(message, callback) { queueMicrotask(() => callback?.(handle(message))); }
   };

@@ -1,0 +1,9 @@
+{
+  "name": "Little Pause — Website Blocker & Focus Timer",
+  "short_name": "Little Pause",
+  "start_url": "/Talk_To_Unlock/",
+  "display": "standalone",
+  "background_color": "#123047",
+  "theme_color": "#123047",
+  "description": "A friendly website blocker and focus timer for everyday attention."
+}

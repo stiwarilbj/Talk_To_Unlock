@@ -3,15 +3,15 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Talk to Unlock</title>
-    <link rel="stylesheet" href="popup.css?v=4">
+    <title>Little Pause</title>
+    <link rel="stylesheet" href="popup.css?v=31">
   </head>
   <body>
     <div class="popup-shell">
       <header class="topbar">
-        <button class="brand button-reset" type="button" data-open="overview" aria-label="Open Talk to Unlock dashboard">
-          <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
-          <span>Talk to Unlock</span>
+        <button class="brand button-reset" type="button" data-open="sites" aria-label="Open Little Pause site settings">
+          <span class="brand-mark" aria-hidden="true"><i></i><i></i></span>
+          <span>Little Pause</span>
         </button>
         <label class="protection-switch">
           <input id="enabled" type="checkbox">
@@ -20,56 +20,65 @@
         </label>
       </header>
 
-      <main>
-        <section class="mode-panel" aria-labelledby="mode-heading">
+      <main id="main-content">
+        <section class="welcome-panel" aria-labelledby="welcome-title">
+          <div class="mascot" aria-hidden="true"><span></span><span></span><i></i></div>
           <div>
-            <p class="eyebrow" id="mode-heading">Current mode</p>
-            <h1 id="mode-name">Balanced</h1>
-            <p id="mode-description">Voice check + timed fallback</p>
+            <p class="eyebrow">A small reset for your attention</p>
+            <h1 id="welcome-title">Make a little room.</h1>
+            <p id="welcome-copy">Your chosen sites wait behind a friendly pause.</p>
           </div>
-          <button class="text-action" type="button" data-open="settings">Change <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"></path></svg></button>
         </section>
 
         <section class="focus-panel" aria-labelledby="focus-heading">
-          <h2 id="focus-heading">Start a focus lock</h2>
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Focus timer</p>
+              <h2 id="focus-heading">Ready when you are</h2>
+            </div>
+            <span class="focus-chip" id="focus-chip">25 min</span>
+          </div>
           <div class="duration-picker" role="group" aria-label="Focus duration">
             <button type="button" class="duration active" data-minutes="25">25 min</button>
             <button type="button" class="duration" data-minutes="50">50 min</button>
             <button type="button" class="duration" data-minutes="custom">Custom</button>
           </div>
-          <label class="custom-duration" id="custom-duration" hidden>Minutes <input id="custom-minutes" type="number" min="5" max="240" value="75"></label>
-          <button id="focus-action" class="primary-button" type="button">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 8 6-8 6Z"></path></svg>
-            <span>Start focus</span>
-          </button>
+          <label class="custom-duration" id="custom-duration" hidden>Minutes <input id="custom-minutes" type="number" min="5" max="240" value="75" inputmode="numeric"></label>
+          <button id="focus-action" class="primary-button" type="button"><span class="button-icon" aria-hidden="true">▶</span><span>Start focusing</span></button>
           <p class="focus-remaining" id="focus-remaining" aria-live="polite"></p>
         </section>
 
-        <section class="today-panel" aria-labelledby="today-heading">
-          <h2 id="today-heading">Today</h2>
-          <dl class="metric-list">
-            <div><dt><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 11V8a5 5 0 0 1 10 0v3M5 11h14v10H5z"></path></svg>Unlocks</dt><dd id="metric-unlocks">0</dd></div>
-            <div><dt><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>Focused time</dt><dd id="metric-time">0 min</dd></div>
-            <div><dt><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 3v9h9"></path></svg>Daily allowance</dt><dd id="metric-allowance">Unlimited</dd></div>
-          </dl>
-          <div class="progress" role="progressbar" aria-label="Daily allowance used" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="allowance-progress"></span></div>
+        <section class="sites-panel" aria-labelledby="sites-heading">
+          <div class="section-heading"><div><p class="eyebrow">Your list</p><h2 id="sites-heading">My sites</h2></div><button class="text-action" type="button" data-open="sites">Manage <span aria-hidden="true">→</span></button></div>
+          <ul id="rule-list" class="rule-list"></ul>
+          <button class="add-site-button" type="button" data-open="sites"><span aria-hidden="true">＋</span><span>Add a site</span></button>
         </section>
 
-        <section class="rules-panel" aria-labelledby="rules-heading">
-          <div class="section-heading"><h2 id="rules-heading">Active site rules</h2><button class="text-action small" type="button" data-open="site-rules">View all</button></div>
-          <ul id="rule-list" class="rule-list"></ul>
-        </section>
+        <div class="quick-links" aria-label="More Little Pause pages">
+          <button type="button" data-open="activity">Activity <span aria-hidden="true">→</span></button>
+          <button type="button" data-open="settings">Settings <span aria-hidden="true">→</span></button>
+        </div>
       </main>
 
-      <nav class="bottom-nav" aria-label="Extension navigation">
-        <button type="button" data-open="overview" class="active"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="3" width="7" height="7" rx="1"></rect><rect x="3" y="14" width="7" height="7" rx="1"></rect><rect x="14" y="14" width="7" height="7" rx="1"></rect></svg><span>Dashboard</span></button>
-        <button type="button" data-open="activity"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg><span>Activity</span></button>
-        <button type="button" data-open="settings"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"></circle><path d="M19 12a7 7 0 0 0-.1-1l2-1.5-2-3.4-2.4 1A8 8 0 0 0 14.8 6l-.3-2.6h-4L10.2 6a8 8 0 0 0-1.7 1.1l-2.4-1-2 3.4 2 1.5a7 7 0 0 0 0 2l-2 1.5 2 3.4 2.4-1a8 8 0 0 0 1.7 1.1l.3 2.6h4l.3-2.6a8 8 0 0 0 1.7-1.1l2.4 1 2-3.4-2-1.5a7 7 0 0 0 .1-1Z"></path></svg><span>Settings</span></button>
-      </nav>
+      <section class="onboarding-panel" id="onboarding-panel" hidden aria-labelledby="onboarding-title">
+        <div class="onboarding-progress" aria-label="Setup progress"><span class="current">1</span><i></i><span>2</span><i></i><span>3</span></div>
+        <div class="onboarding-mascot mascot" aria-hidden="true"><span></span><span></span><i></i></div>
+        <p class="eyebrow">A gentle start</p>
+        <h1 id="onboarding-title">Choose your pause places.</h1>
+        <p class="onboarding-copy">Pick only the sites you want a little help with. Nothing turns on until you choose it.</p>
+        <form id="onboarding-form">
+          <fieldset class="onboarding-group"><legend>Sites to protect</legend><div class="site-choices" id="site-choices"></div><label class="custom-site"><span>Another site</span><input id="onboarding-custom-site" type="text" placeholder="example.com" autocomplete="url"></label></fieldset>
+          <fieldset class="onboarding-group"><legend>When I visit, I want to…</legend><div class="method-choices"><label><input type="radio" name="onboarding-method" value="pause" checked><span><strong>Take a pause</strong><small>10 seconds, then you decide.</small></span></label><label><input type="radio" name="onboarding-method" value="voice"><span><strong>Say a phrase</strong><small>Use your voice to unlock.</small></span></label><label><input type="radio" name="onboarding-method" value="blocked"><span><strong>Keep it blocked</strong><small>No normal unlock path.</small></span></label></div></fieldset>
+          <div class="demo-box"><div><strong>Try the tiny demo</strong><p id="demo-copy">See what a 10-second pause feels like.</p></div><button id="demo-action" class="demo-button" type="button">Try it</button></div>
+          <p class="form-message" id="onboarding-message" role="alert"></p>
+          <button id="finish-onboarding" class="primary-button" type="submit">Set up Little Pause</button>
+          <button id="skip-onboarding" class="skip-button" type="button">I’ll choose sites later</button>
+        </form>
+      </section>
 
       <div class="toast" id="toast" role="status" aria-live="polite"></div>
     </div>
-    <script src="preview-api.js"></script>
+    <script src="preview-api.js?v=31"></script>
     <script src="shared.js"></script>
     <script src="popup.js"></script>
   </body>
