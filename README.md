@@ -2,7 +2,11 @@
 
 Little Pause adds a small, friendly pause before the websites you choose. It includes a 10-second pause by default for new rules, optional Voice rules, hard blocks, and 25-, 50-, or custom-minute Focus sessions.
 
-The project is also published as a static public website at [stiwarilbj.github.io/Talk_To_Unlock](https://stiwarilbj.github.io/Talk_To_Unlock/). The site explains manual Chrome installation because this release is not yet listed in the Chrome Web Store.
+The project is also published as a static public website at [Little Pause](https://stiwarilbj.github.io/Talk_To_Unlock/). The site explains manual Chrome installation because this release is not yet listed in the Chrome Web Store. Practical guides live in the [guides directory](https://stiwarilbj.github.io/Talk_To_Unlock/guides/), including setup for a pause before opening a distracting website and for blocking YouTube during Focus.
+
+The public site is intentionally static and local-first: it has no advertising, tracking scripts, accounts, email collection, or third-party marketing integrations. Its [sitemap](https://stiwarilbj.github.io/Talk_To_Unlock/sitemap.xml) contains the canonical public pages. Search visibility depends on Google’s crawling, indexing, and ranking systems; publication and a sitemap do not guarantee a particular position.
+
+Little Pause is maintained by [Shantanu Tiwari](https://github.com/stiwarilbj) in the public [Talk_To_Unlock repository](https://github.com/stiwarilbj/Talk_To_Unlock).
 
 ## Extension surfaces
 

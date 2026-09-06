@@ -1,20 +1,29 @@
 <!doctype html>
-<html lang="en" class="no-js">
+<html lang="en-US" class="no-js">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Little Pause — Friendly Website Blocker &amp; Focus Timer</title>
-    <meta name="description" content="Little Pause adds a friendly pause before distracting websites and gives you a simple focus timer. Local-first, no accounts, no tracking.">
+    <meta name="theme-color" content="#123047">
+    <title>Little Pause — Free Website Blocker &amp; Focus Timer for Chrome</title>
+    <meta name="description" content="Little Pause is a free Chrome website blocker with a gentle 10-second pause, optional voice checks, and 25-, 50-, or custom-minute focus sessions.">
     <link rel="canonical" href="https://stiwarilbj.github.io/Talk_To_Unlock/">
+    <link rel="icon" type="image/png" sizes="128x128" href="assets/favicon.png">
+    <link rel="apple-touch-icon" href="assets/favicon.png">
+    <link rel="manifest" href="site.webmanifest">
+    <meta property="og:site_name" content="Little Pause">
     <meta property="og:type" content="website">
     <meta property="og:title" content="Little Pause — A little pause. More room for what matters.">
-    <meta property="og:description" content="A friendly website blocker and focus timer for everyday attention.">
+    <meta property="og:description" content="A free Chrome website blocker that adds a friendly pause before selected distractions and includes a simple focus timer.">
     <meta property="og:url" content="https://stiwarilbj.github.io/Talk_To_Unlock/">
-    <meta property="og:image" content="https://stiwarilbj.github.io/Talk_To_Unlock/assets/og-image.svg">
+    <meta property="og:image" content="https://stiwarilbj.github.io/Talk_To_Unlock/assets/og-image.png">
+    <meta property="og:image:type" content="image/png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Little Pause logo and the message A little pause. More room for what matters.">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Little Pause — A little pause. More room for what matters.">
-    <meta name="twitter:description" content="A friendly website blocker and focus timer for everyday attention.">
-    <meta name="twitter:image" content="https://stiwarilbj.github.io/Talk_To_Unlock/assets/og-image.svg">
+    <meta name="twitter:description" content="A free Chrome website blocker with a gentle pause and a simple focus timer.">
+    <meta name="twitter:image" content="https://stiwarilbj.github.io/Talk_To_Unlock/assets/og-image.png">
     <link rel="stylesheet" href="styles.css">
     <script type="application/ld+json">
       {
@@ -22,28 +31,114 @@
         "@type": "SoftwareApplication",
         "name": "Little Pause",
         "applicationCategory": "ProductivityApplication",
-        "operatingSystem": "Chrome",
-        "description": "A friendly website blocker and focus timer with local-only settings.",
+        "applicationSubCategory": "Website blocker and focus timer",
+        "browserRequirements": "Requires Google Chrome with support for unpacked Manifest V3 extensions.",
+        "description": "A free Chrome website blocker and focus timer with a gentle pause before selected distracting websites.",
         "softwareVersion": "3.1.0",
         "isAccessibleForFree": true,
         "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
         "downloadUrl": "https://stiwarilbj.github.io/Talk_To_Unlock/install.html",
-        "url": "https://stiwarilbj.github.io/Talk_To_Unlock/"
+        "image": "https://stiwarilbj.github.io/Talk_To_Unlock/assets/og-image.png",
+        "url": "https://stiwarilbj.github.io/Talk_To_Unlock/",
+        "creator": { "@type": "Organization", "name": "Little Pause project", "url": "https://github.com/stiwarilbj/Talk_To_Unlock" }
       }
     </script>
   </head>
   <body class="no-js">
     <a class="skip-link" href="#main-content">Skip to content</a>
-    <header class="site-header"><div class="container nav-wrap"><a class="brand" href="./"><span class="brand-mark" aria-hidden="true"><i></i><i></i></span><span>Little Pause</span></a><button class="nav-toggle" type="button" data-nav-toggle aria-expanded="false" aria-controls="site-nav">Menu</button><nav class="site-nav" id="site-nav" data-site-nav aria-label="Main navigation"><a href="install.html">Install</a><a href="privacy.html">Privacy</a><a href="help.html">Help</a><a href="guides/reduce-scrolling.html">Guides</a></nav></div></header>
+    <header class="site-header">
+      <div class="container nav-wrap">
+        <a class="brand" href="./"><span class="brand-mark" aria-hidden="true"><i></i><i></i></span><span>Little Pause</span></a>
+        <button class="nav-toggle" type="button" data-nav-toggle aria-expanded="false" aria-controls="site-nav">Menu</button>
+        <nav class="site-nav" id="site-nav" data-site-nav aria-label="Main navigation">
+          <a href="install.html">Install</a><a href="guides/">Guides</a><a href="help.html">Help</a><a href="privacy.html">Privacy</a><a href="https://github.com/stiwarilbj/Talk_To_Unlock">Source</a>
+        </nav>
+      </div>
+    </header>
     <main id="main-content">
-      <section class="hero"><div class="container hero-grid"><div><p class="kicker">Little Pause 3.1.0</p><h1>A little pause.<br>More room for what matters.</h1><p class="hero-copy">A friendly website blocker and focus timer for everyday attention. Choose the sites that pull you away, then decide what happens next.</p><div class="button-row"><a class="button" href="install.html">Download for Chrome</a><a class="button ghost" href="#demo">▶&nbsp; Try a pause</a></div><p class="micro-note">Free, local-first, and currently installed through Chrome Developer mode.</p></div><div class="hero-art"><div class="browser-frame" aria-label="Little Pause extension preview"><div class="browser-bar"><span class="browser-dot"></span><span class="browser-dot"></span><span class="browser-dot"></span><span class="browser-url"></span></div><div class="browser-page"><div class="browser-copy"><p>Make space for your attention.</p><h2>Small pause.<br>Clear choice.</h2><span>Protect only the sites you choose.</span><div class="browser-button">Start a pause&nbsp; →</div></div><img class="popup-shot" src="assets/popup.png" alt="Little Pause popup with protection status, focus timer, and My sites"></div></div><div class="hero-mascot" aria-hidden="true"><span></span><span></span><i></i></div></div></div></section>
-      <section class="workflow" aria-labelledby="workflow-title"><div class="container"><div class="section-heading"><p class="kicker" style="color:#168ba4">How it works</p><h2 id="workflow-title">A softer way to change the next click.</h2></div><div class="workflow-grid"><div class="workflow-step"><div class="round-icon" aria-hidden="true">1</div><div><h3>Choose sites</h3><p>Pick the websites that make it harder to stay with what matters.</p></div></div><div class="workflow-step"><div class="round-icon" aria-hidden="true">2</div><div><h3>Take a pause</h3><p>Start with ten quiet seconds, a phrase, or a firm block.</p></div></div><div class="workflow-step"><div class="round-icon" aria-hidden="true">3</div><div><h3>Get back to it</h3><p>When the pause ends, make the choice that feels right for now.</p></div></div></div></div></section>
-      <section class="section" aria-labelledby="promise-title"><div class="container"><div class="section-heading"><p class="kicker" style="color:#168ba4">Made for real days</p><h2 id="promise-title">Simple on the surface. Thoughtful underneath.</h2><p class="section-lede">Little Pause keeps the everyday flow light while leaving room for schedules, limits, voice checks, and Focus sessions when you want them.</p></div><div class="promise-grid"><article class="promise-card"><div class="round-icon" aria-hidden="true">✦</div><h3>Gentle by design</h3><p>Start with a small pause instead of a lecture. Adjust the boundary site by site.</p></article><article class="promise-card"><div class="round-icon" aria-hidden="true">♡</div><h3>Your data stays yours</h3><p>Settings and activity stay in browser storage. There are no accounts or tracking scripts.</p></article><article class="promise-card"><div class="round-icon" aria-hidden="true">◷</div><h3>Focus when you need it</h3><p>Start a 25-, 50-, or custom-minute session from the popup and let it run in the background.</p></article><article class="promise-card"><div class="round-icon" aria-hidden="true">＋</div><h3>Keep the nuance</h3><p>Advanced schedules, allowances, cooldowns, and emergency access live in the full settings page.</p></article></div></div></section>
-      <section class="section blue" id="demo" aria-labelledby="demo-title"><div class="container demo-grid"><div class="demo-copy"><p class="kicker">Preview, not a block</p><h2 id="demo-title">Try a ten-second pause.</h2><p>This browser demonstration is only a preview. It does not block this page, request access, or save anything. The extension uses the same small pause before a site you choose.</p><a class="button ghost" href="install.html">See how to install</a></div><div class="demo-card" data-demo><p class="demo-label">Little Pause preview</p><h3>A moment before you scroll</h3><p data-demo-copy>This is a preview — nothing is blocked.</p><div class="demo-clock" data-demo-clock aria-live="polite">10<small>seconds</small></div><button class="button mint" type="button" data-demo-action>Start the preview</button><p class="demo-status" data-demo-status aria-live="polite">A tiny moment for your attention.</p></div></div></section>
-      <section class="section screenshots" aria-labelledby="screenshots-title"><div class="container"><div class="section-heading"><p class="kicker" style="color:#168ba4">See it in action</p><h2 id="screenshots-title">A calm little command center.</h2><p class="section-lede">These are screenshots from the extension build, not product mockups.</p></div><div class="shot-grid"><figure class="shot-card"><img src="assets/popup.png" alt="Little Pause popup showing a focus timer and protected site list" loading="lazy"><figcaption>Start focusing from the popup.</figcaption></figure><figure class="shot-card"><img src="assets/settings.png" alt="Little Pause My sites settings showing pause, phrase, and blocked choices" loading="lazy"><figcaption>Choose each site’s boundary.</figcaption></figure><figure class="shot-card"><img src="assets/blocker.png" alt="Little Pause blocker asking the visitor to start a short pause before scrolling" loading="lazy"><figcaption>Meet a pause before you scroll.</figcaption></figure></div></div></section>
-      <section class="section faq" aria-labelledby="faq-title"><div class="container"><div class="section-heading"><p class="kicker" style="color:#168ba4">Questions, answered</p><h2 id="faq-title">No mystery settings.</h2></div><div class="faq-grid"><details><summary>Is Little Pause in the Chrome Web Store?</summary><p>Not yet. The current release is available as a manual download. The <a href="install.html">installation page</a> explains Chrome Developer mode and Load unpacked.</p></details><details><summary>Does Little Pause block the whole internet?</summary><p>No. It only evaluates the domains you add to My sites, including subdomains when that option is enabled.</p></details><details><summary>Is my voice recorded?</summary><p>No audio or recognized transcript is stored. Browser speech processing and microphone availability depend on Chrome and your device. See the <a href="privacy.html">privacy page</a>.</p></details><details><summary>Can I use it without voice?</summary><p>Yes. Every site can use a timed pause or a hard block. Voice is optional and only appears for Voice rules.</p></details></div></div></section>
+      <section class="hero">
+        <div class="container hero-grid">
+          <div>
+            <p class="kicker">Free Chrome extension</p>
+            <h1>A little pause.<br>More room for what matters.</h1>
+            <p class="hero-copy">Little Pause is a free Chrome website blocker with a gentle ten-second pause before the sites you choose. Pick a boundary that fits the moment, then decide what comes next.</p>
+            <div class="button-row"><a class="button" href="install.html">Download for Chrome</a><a class="button ghost" href="#demo">▶&nbsp; Try a pause</a></div>
+            <p class="micro-note">Local-first · no account · no tracking · manual installation while the Chrome Web Store listing is in progress.</p>
+          </div>
+          <div class="hero-art">
+            <div class="browser-frame" aria-label="Little Pause interface preview">
+              <div class="browser-bar"><span class="browser-dot"></span><span class="browser-dot"></span><span class="browser-dot"></span><span class="browser-url"></span></div>
+              <div class="browser-page"><div class="browser-copy"><p>Make space for your attention.</p><h2>Small pause.<br>Clear choice.</h2><span>Protect only the sites you choose.</span><div class="browser-button">Start a pause&nbsp; →</div></div><img class="popup-shot" src="assets/popup.png" width="390" height="640" alt="Interface preview of the Little Pause popup with protection status, a Focus timer, and My sites"></div>
+            </div>
+            <div class="hero-mascot" aria-hidden="true"><span></span><span></span><i></i></div>
+          </div>
+        </div>
+      </section>
+      <section class="workflow" aria-labelledby="workflow-title">
+        <div class="container">
+          <div class="section-heading"><p class="kicker light">How it works</p><h2 id="workflow-title">A softer way to change the next click.</h2></div>
+          <div class="workflow-grid">
+            <div class="workflow-step"><div class="round-icon" aria-hidden="true">1</div><div><h3>Choose sites</h3><p>Pick the websites that make it harder to stay with what matters.</p></div></div>
+            <div class="workflow-step"><div class="round-icon" aria-hidden="true">2</div><div><h3>Choose a boundary</h3><p>Start with ten quiet seconds, a phrase, or a firm block.</p></div></div>
+            <div class="workflow-step"><div class="round-icon" aria-hidden="true">3</div><div><h3>Make the next choice</h3><p>When the pause ends, continue or return to what you meant to do.</p></div></div>
+          </div>
+        </div>
+      </section>
+      <section class="section comparison" aria-labelledby="comparison-title">
+        <div class="container">
+          <div class="section-heading"><p class="kicker light">Three ways to pause</p><h2 id="comparison-title">Choose the boundary, site by site.</h2><p class="section-lede">There is no one right level of friction. Little Pause lets you set a different response for every site.</p></div>
+          <div class="comparison-grid">
+            <article class="comparison-card"><h3>Take a pause</h3><p><strong>Best for a light touch.</strong> Start a ten-second pause, then choose whether you still want to continue. The default for new sites.</p></article>
+            <article class="comparison-card"><h3>Say a phrase</h3><p><strong>Best when intention helps.</strong> Speak the phrase you set for the site. Voice is optional and audio is never saved.</p></article>
+            <article class="comparison-card"><h3>Keep blocked</h3><p><strong>Best for a firm edge.</strong> Keep the site closed until your rule allows it, with emergency access still available when enabled.</p></article>
+          </div>
+        </div>
+      </section>
+      <section class="section" aria-labelledby="promise-title">
+        <div class="container">
+          <div class="section-heading"><p class="kicker light">Made for real days</p><h2 id="promise-title">Simple on the surface. Thoughtful underneath.</h2><p class="section-lede">Little Pause keeps the everyday flow light while leaving room for schedules, limits, voice checks, and Focus sessions when you want them.</p></div>
+          <div class="promise-grid">
+            <article class="promise-card"><div class="round-icon" aria-hidden="true">✦</div><h3>Gentle by design</h3><p>Start with a small pause instead of a lecture. Adjust the boundary site by site.</p></article>
+            <article class="promise-card"><div class="round-icon" aria-hidden="true">♡</div><h3>Your data stays yours</h3><p>Settings and activity stay in browser storage. There are no accounts or tracking scripts.</p></article>
+            <article class="promise-card"><div class="round-icon" aria-hidden="true">◷</div><h3>Focus when you need it</h3><p>Start a 25-, 50-, or custom-minute session from the popup and let it run in the background.</p></article>
+            <article class="promise-card"><div class="round-icon" aria-hidden="true">＋</div><h3>Keep the nuance</h3><p>Advanced schedules, allowances, cooldowns, and emergency access live in the full settings page.</p></article>
+          </div>
+        </div>
+      </section>
+      <section class="section blue" id="demo" aria-labelledby="demo-title">
+        <div class="container demo-grid">
+          <div class="demo-copy"><p class="kicker">Preview, not a block</p><h2 id="demo-title">Try a ten-second pause.</h2><p>This browser demonstration is only a preview. It does not block this page, request access, or save anything. The extension uses the same small pause before a site you choose.</p><a class="button ghost" href="install.html">See how to install</a></div>
+          <div class="demo-card" data-demo><p class="demo-label">Little Pause preview</p><h3>A moment before you scroll</h3><p data-demo-copy>This is a preview — nothing is blocked.</p><div class="demo-clock" data-demo-clock aria-live="polite">10<small>seconds</small></div><button class="button mint" type="button" data-demo-action>Start the preview</button><p class="demo-status" data-demo-status aria-live="polite">A tiny moment for your attention.</p></div>
+        </div>
+      </section>
+      <section class="section" aria-labelledby="guides-title">
+        <div class="container">
+          <div class="section-heading"><p class="kicker light">Practical guides</p><h2 id="guides-title">Small ideas for more intentional browsing.</h2><p class="section-lede">Start with the problem you are trying to solve, then choose the smallest boundary that helps.</p></div>
+          <div class="guide-directory">
+            <article class="guide-card"><h2>Reduce distracting website visits</h2><p>Build a smaller, more trustworthy list of sites and add useful friction without making the internet disappear.</p><a href="guides/reduce-scrolling.html">Read the guide&nbsp; →</a></article>
+            <article class="guide-card"><h2>Use short Focus sessions</h2><p>Learn when to choose 25, 50, or a custom number of minutes and how to protect the next small action.</p><a href="guides/short-focus-sessions.html">Read the guide&nbsp; →</a></article>
+            <article class="guide-card"><h2>Pause before opening a site</h2><p>A step-by-step setup for a ten-second pause before a distracting website, with options for a stronger boundary.</p><a href="guides/pause-before-opening-websites.html">Read the guide&nbsp; →</a></article>
+            <article class="guide-card"><h2>Block YouTube during Focus</h2><p>Set up a site-specific Focus rule while keeping the choice adjustable for ordinary days.</p><a href="guides/block-youtube-during-focus.html">Read the guide&nbsp; →</a></article>
+          </div>
+          <p class="center-link"><a href="guides/">Browse all Little Pause guides&nbsp; →</a></p>
+        </div>
+      </section>
+      <section class="section screenshots" aria-labelledby="screenshots-title">
+        <div class="container">
+          <div class="section-heading"><p class="kicker light">See it in action</p><h2 id="screenshots-title">A calm little command center.</h2><p class="section-lede">These are interface previews from the Little Pause extension build, not product mockups or promises about stored activity.</p></div>
+          <div class="shot-grid"><figure class="shot-card"><img src="assets/popup.png" width="390" height="640" alt="Little Pause popup interface showing protection status, a focus timer, and a My sites shortcut" loading="lazy"><figcaption>Start focusing from the popup.</figcaption></figure><figure class="shot-card"><img src="assets/settings.png" width="1440" height="1000" alt="Little Pause My sites interface showing Pause, Voice, and Blocked options for a site" loading="lazy"><figcaption>Choose each site’s boundary.</figcaption></figure><figure class="shot-card"><img src="assets/blocker.png" width="1440" height="1000" alt="Little Pause blocker interface asking the visitor to start a short pause before continuing" loading="lazy"><figcaption>Meet a pause before you scroll.</figcaption></figure></div>
+        </div>
+      </section>
+      <section class="section faq" aria-labelledby="faq-title">
+        <div class="container">
+          <div class="section-heading"><p class="kicker light">Questions, answered</p><h2 id="faq-title">No mystery settings.</h2></div>
+          <div class="faq-grid"><details><summary>Is Little Pause in the Chrome Web Store?</summary><p>Not yet. The current release is available as a manual download. The <a href="install.html">installation page</a> explains Chrome Developer mode and Load unpacked.</p></details><details><summary>Does Little Pause block the whole internet?</summary><p>No. It only applies rules to domains you add in My sites. Chrome content scripts can evaluate eligible pages so the extension can notice a matching rule.</p></details><details><summary>Is my voice recorded?</summary><p>No audio or recognized transcript is stored. Browser speech processing and microphone availability depend on Chrome and your device. See the <a href="privacy.html">privacy page</a>.</p></details><details><summary>Can I use it without voice?</summary><p>Yes. Every site can use a timed pause or a hard block. Voice is optional and only appears for Voice rules.</p></details></div>
+        </div>
+      </section>
     </main>
-    <footer class="site-footer"><div class="container"><div class="footer-grid"><div><a class="brand" href="./"><span class="brand-mark" aria-hidden="true"><i></i><i></i></span><span>Little Pause</span></a><p class="footer-note">A friendly website blocker and focus timer for everyday attention.</p></div><div class="footer-column"><h2>Get started</h2><a href="install.html">Installation</a><a href="#demo">Try a pause</a></div><div class="footer-column"><h2>Trust</h2><a href="privacy.html">Privacy</a><a href="help.html">Help</a></div><div class="footer-column"><h2>Learn</h2><a href="guides/reduce-scrolling.html">Reduce distracting visits</a><a href="guides/short-focus-sessions.html">Short focus sessions</a></div></div><div class="footer-bottom">Little Pause 3.1.0 · Built for a little more room.</div></div></footer>
+    <footer class="site-footer">
+      <div class="container"><div class="footer-grid"><div><a class="brand" href="./"><span class="brand-mark" aria-hidden="true"><i></i><i></i></span><span>Little Pause</span></a><p class="footer-note">A friendly website blocker and focus timer for everyday attention.</p></div><div class="footer-column"><h2>Get started</h2><a href="install.html">Installation</a><a href="#demo">Try a pause</a></div><div class="footer-column"><h2>Trust</h2><a href="privacy.html">Privacy</a><a href="help.html">Help</a></div><div class="footer-column"><h2>Learn</h2><a href="guides/">All guides</a><a href="guides/reduce-scrolling.html">Reduce distracting visits</a><a href="guides/short-focus-sessions.html">Short focus sessions</a></div></div><div class="footer-bottom">Little Pause 3.1.0 · <a href="https://github.com/stiwarilbj/Talk_To_Unlock">Open source on GitHub</a> · Maintained by <a href="https://github.com/stiwarilbj">Shantanu Tiwari</a></div></div>
+    </footer>
     <script src="script.js"></script>
   </body>
 </html>

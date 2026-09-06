@@ -11,6 +11,13 @@
     if (siteNav) siteNav.dataset.open = String(!open);
     navToggle.setAttribute('aria-expanded', String(!open));
   });
+  siteNav?.querySelectorAll('a').forEach((link) => {
+    link.addEventListener('click', () => {
+      if (!siteNav || !navToggle) return;
+      siteNav.dataset.open = 'false';
+      navToggle.setAttribute('aria-expanded', 'false');
+    });
+  });
 
   const demo = document.querySelector('[data-demo]');
   if (!demo) return;
