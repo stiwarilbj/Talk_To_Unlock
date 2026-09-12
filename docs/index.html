@@ -31,6 +31,8 @@
         "@context": "https://schema.org",
         "@type": "SoftwareApplication",
         "name": "Little Pause",
+        "alternateName": "Talk to Unlock",
+        "operatingSystem": "Windows, macOS, Linux, ChromeOS",
         "applicationCategory": "ProductivityApplication",
         "applicationSubCategory": "Website blocker and focus timer",
         "browserRequirements": "Requires Google Chrome with support for unpacked Manifest V3 extensions.",
@@ -46,6 +48,7 @@
     </script>
   </head>
   <body class="no-js">
+    <script>document.body.classList.remove('no-js');</script>
     <a class="skip-link" href="#main-content">Skip to content</a>
     <header class="site-header">
       <div class="container nav-wrap">
@@ -63,13 +66,13 @@
             <p class="kicker">Free Chrome extension</p>
             <h1>A little pause.<br>More room for what matters.</h1>
             <p class="hero-copy">Little Pause is a free Chrome website blocker with a gentle ten-second pause before the sites you choose. Pick a boundary that fits the moment, then decide what comes next.</p>
-            <div class="button-row"><a class="button" href="install.html">Download for Chrome</a><a class="button ghost" href="#demo">▶&nbsp; Try a pause</a></div>
-            <p class="micro-note">Local-first · no account · no tracking · manual installation while the Chrome Web Store listing is in progress.</p>
+            <div class="button-row"><a class="button" href="install.html">Get it for Chrome</a><a class="button ghost" href="#demo">▶&nbsp; Try a pause</a></div>
+            <p class="micro-note">Local-first · no account · no tracking. The Chrome Web Store release is listed as Talk to Unlock; Little Pause 3.1.0 is available as a manual download.</p>
           </div>
           <div class="hero-art">
             <div class="browser-frame" aria-label="Little Pause interface preview">
               <div class="browser-bar"><span class="browser-dot"></span><span class="browser-dot"></span><span class="browser-dot"></span><span class="browser-url"></span></div>
-              <div class="browser-page"><div class="browser-copy"><p>Make space for your attention.</p><h2>Small pause.<br>Clear choice.</h2><span>Protect only the sites you choose.</span><div class="browser-button">Start a pause&nbsp; →</div></div><img class="popup-shot" src="assets/popup.png" width="390" height="640" alt="Interface preview of the Little Pause popup with protection status, a Focus timer, and My sites"></div>
+              <div class="browser-page"><div class="browser-copy"><p>Make space for your attention.</p><h2>Small pause.<br>Clear choice.</h2><span>Protect only the sites you choose.</span><div class="browser-button">Start a pause&nbsp; →</div></div><img class="popup-shot" src="assets/popup.png" fetchpriority="high" width="390" height="640" alt="Interface preview of the Little Pause popup with protection status, a Focus timer, and My sites"></div>
             </div>
             <div class="hero-mascot" aria-hidden="true"><span></span><span></span><i></i></div>
           </div>
@@ -126,14 +129,14 @@
       </section>
       <section class="section screenshots" aria-labelledby="screenshots-title">
         <div class="container">
-          <div class="section-heading"><p class="kicker light">See it in action</p><h2 id="screenshots-title">A calm little command center.</h2><p class="section-lede">These are interface previews from the Little Pause extension build, not product mockups or promises about stored activity.</p></div>
+          <div class="section-heading"><p class="kicker light">See it in action</p><h2 id="screenshots-title">A calm little command center.</h2><p class="section-lede">These browser previews show Little Pause 3.1.0. The current Chrome Web Store release uses the earlier Talk to Unlock 3.0.1 interface; example sites and activity are illustrative.</p></div>
           <div class="shot-grid"><figure class="shot-card"><img src="assets/popup.png" width="390" height="640" alt="Little Pause popup interface showing protection status, a focus timer, and a My sites shortcut" loading="lazy"><figcaption>Start focusing from the popup.</figcaption></figure><figure class="shot-card"><img src="assets/settings.png" width="1440" height="1000" alt="Little Pause My sites interface showing Pause, Voice, and Blocked options for a site" loading="lazy"><figcaption>Choose each site’s boundary.</figcaption></figure><figure class="shot-card"><img src="assets/blocker.png" width="1440" height="1000" alt="Little Pause blocker interface asking the visitor to start a short pause before continuing" loading="lazy"><figcaption>Meet a pause before you scroll.</figcaption></figure></div>
         </div>
       </section>
       <section class="section faq" aria-labelledby="faq-title">
         <div class="container">
           <div class="section-heading"><p class="kicker light">Questions, answered</p><h2 id="faq-title">No mystery settings.</h2></div>
-          <div class="faq-grid"><details><summary>Is Little Pause in the Chrome Web Store?</summary><p>Not yet. The current release is available as a manual download. The <a href="install.html">installation page</a> explains Chrome Developer mode and Load unpacked.</p></details><details><summary>Does Little Pause block the whole internet?</summary><p>No. It only applies rules to domains you add in My sites. Chrome content scripts can evaluate eligible pages so the extension can notice a matching rule.</p></details><details><summary>Is my voice recorded?</summary><p>No audio or recognized transcript is stored. Browser speech processing and microphone availability depend on Chrome and your device. See the <a href="privacy.html">privacy page</a>.</p></details><details><summary>Can I use it without voice?</summary><p>Yes. Every site can use a timed pause or a hard block. Voice is optional and only appears for Voice rules.</p></details></div>
+          <div class="faq-grid"><details><summary>Is Little Pause in the Chrome Web Store?</summary><p>The published store version is <a href="https://chromewebstore.google.com/detail/talk-to-unlock-%E2%80%94-voice-fo/beadkilijapfmijnjllnmfjiglbocobb">Talk to Unlock 3.0.1</a>, the earlier name and interface. Little Pause 3.1.0 is the newer manual build. <a href="install.html">Compare installation options</a> before choosing.</p></details><details><summary>Does Little Pause block the whole internet?</summary><p>No. It only applies rules to domains you add in My sites. Chrome content scripts can evaluate eligible pages so the extension can notice a matching rule.</p></details><details><summary>Is my voice recorded?</summary><p>No audio or recognized transcript is stored. Browser speech processing and microphone availability depend on Chrome and your device. See the <a href="privacy.html">privacy page</a>.</p></details><details><summary>Can I use it without voice?</summary><p>Yes. Every site can use a timed pause or a hard block. Voice is optional and only appears for Voice rules.</p></details></div>
         </div>
       </section>
     </main>

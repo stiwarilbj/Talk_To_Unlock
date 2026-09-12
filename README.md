@@ -2,7 +2,7 @@
 
 Little Pause adds a small, friendly pause before the websites you choose. It includes a 10-second pause by default for new rules, optional Voice rules, hard blocks, and 25-, 50-, or custom-minute Focus sessions.
 
-The project is also published as a static public website at [Little Pause](https://stiwarilbj.github.io/Talk_To_Unlock/). The site explains manual Chrome installation because this release is not yet listed in the Chrome Web Store. Practical guides live in the [guides directory](https://stiwarilbj.github.io/Talk_To_Unlock/guides/), including setup for a pause before opening a distracting website and for blocking YouTube during Focus.
+The project is also published as a static public website at [Little Pause](https://stiwarilbj.github.io/Talk_To_Unlock/). The [published Chrome Web Store release](https://chromewebstore.google.com/detail/talk-to-unlock-%E2%80%94-voice-fo/beadkilijapfmijnjllnmfjiglbocobb) is **Talk to Unlock 3.0.1**, offered by Gitchub / Shantanu Tiwari. **Little Pause 3.1.0** is the newer manual build. The installation page explains both versions and their different interfaces. Practical guides live in the [guides directory](https://stiwarilbj.github.io/Talk_To_Unlock/guides/), including setup for a pause before opening a distracting website and for blocking YouTube during Focus.
 
 The public site is intentionally static and local-first: it has no advertising, tracking scripts, accounts, email collection, or third-party marketing integrations. Its [sitemap](https://stiwarilbj.github.io/Talk_To_Unlock/sitemap.xml) contains the canonical public pages. Search visibility depends on Google’s crawling, indexing, and ranking systems; publication and a sitemap do not guarantee a particular position.
 
@@ -31,7 +31,7 @@ Fresh installations start with no hidden preset sites. The popup’s first-use s
 
 ## Privacy
 
-Settings, grants, usage totals, Focus state, and activity remain in `chrome.storage.local`. Activity is retained for up to 30 days or 1,000 events. Visible usage is counted through capped content-script heartbeats only while the protected page is visible and focused. The microphone stream is opened only during a Voice attempt and stopped after success, failure, cancellation, or timeout. Audio and recognized transcript text are never stored. Browser speech-recognition availability and processing depend on Chrome and its settings.
+Settings, grants, usage totals, Focus state, and activity remain in `chrome.storage.local`. Activity defaults to 30 days (configurable from 1–90 days) and is capped at 1,000 events. Visible usage is counted through capped content-script heartbeats only while the protected page is visible and focused. The microphone stream is opened only during a Voice attempt and stopped after success, failure, cancellation, or timeout. Audio and recognized transcript text are never stored. Browser speech-recognition availability and processing depend on Chrome and its settings.
 
 The public site uses no advertising, tracking scripts, accounts, email collection, or forms. GitHub may process ordinary hosting and security logs under its own privacy policy.
 

@@ -86,7 +86,13 @@ test('sitemap contains exactly the canonical indexable pages', () => {
   const sitemap = fs.readFileSync(path.join(docsRoot, 'sitemap.xml'), 'utf8');
   const urls = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]);
   assert.deepEqual(urls.sort(), pages.map(pageUrl).sort());
-  assert.equal((sitemap.match(/<lastmod>2026-09-06<\/lastmod>/g) || []).length, pages.length);
+  const dates = [...sitemap.matchAll(/<lastmod>([^<]+)<\/lastmod>/g)].map(match => match[1]);
+  assert.equal(dates.length, pages.length);
+  for (const date of dates) {
+    assert.match(date, /^\d{4}-\d{2}-\d{2}$/);
+    assert.ok(Number.isFinite(Date.parse(date)), 'lastmod must be a real date');
+    assert.ok(Date.parse(date) <= Date.now(), 'lastmod must not be in the future');
+  }
   assert.doesNotMatch(sitemap, /404\.html|little-pause-3\.1\.0\.zip/);
 });
 
