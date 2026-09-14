@@ -1,0 +1,87 @@
+name: Talk to Unlock CI/CD
+
+on:
+  workflow_run:
+    workflows: ["Quick CI check"]
+    types: [completed]
+  workflow_dispatch:
+
+concurrency:
+  group: talk-to-unlock-cd
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  package-and-deploy:
+    if: >-
+      (github.event_name == 'workflow_dispatch' &&
+       github.ref == 'refs/heads/main') ||
+      (github.event_name == 'workflow_run' &&
+       github.event.workflow_run.conclusion == 'success' &&
+       github.event.workflow_run.head_branch == 'main' &&
+       github.event.workflow_run.repository.full_name == github.repository)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Check out the tested main commit
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+          fetch-depth: 0
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version: 24.13.0
+      - name: Read the extension version
+        id: version
+        shell: bash
+        run: |
+          set -euo pipefail
+          version="$(node -p 'JSON.parse(require("node:fs").readFileSync("manifest.json", "utf8")).version')"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+      - name: Package the extension
+        env:
+          EXTENSION_VERSION: ${{ steps.version.outputs.version }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p dist
+          archive="dist/little-pause-${EXTENSION_VERSION}.zip"
+          rm -f "$archive"
+          zip -qr "$archive" \
+            background.js content.js dashboard.css dashboard.html dashboard.js \
+            icon.svg icons manifest.json popup.css popup.html popup.js \
+            preview-api.js preview.html shared.js styles.css
+          unzip -t "$archive"
+      - name: Prepare the website artifact
+        env:
+          EXTENSION_VERSION: ${{ steps.version.outputs.version }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf _site
+          mkdir -p _site/downloads
+          cp -R docs/. _site/
+          cp "dist/little-pause-${EXTENSION_VERSION}.zip" "_site/downloads/little-pause-${EXTENSION_VERSION}.zip"
+      - name: Upload the extension package
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: talk-to-unlock-extension-${{ steps.version.outputs.version }}
+          path: dist/little-pause-${{ steps.version.outputs.version }}.zip
+          if-no-files-found: error
+          retention-days: 14
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6
+      - name: Upload the Pages artifact
+        uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5
+        with:
+          path: _site
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5
