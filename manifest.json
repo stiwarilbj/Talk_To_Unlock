@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Little Pause — Website Blocker & Focus Timer",
   "short_name": "Little Pause",
-  "version": "3.1.0",
+  "version": "1.0.0",
   "description": "A friendly website blocker and focus timer with gentle pauses, optional voice checks, and local-only settings.",
   "permissions": [
     "storage",
